@@ -1,36 +1,35 @@
-const mongoose = require("mongoose");
+// models/productModel.js
+const mongoose = require('mongoose');
 
-// Contact schema
+// Define the Contact schema
 const contactSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
-    phone: { type: Number, required: true },
-});
+    phone: { type: Number, required: true }
+}, { _id: false }); // No _id for embedded documents
 
-// Manufacturer schema
+// Define the Manufacturer schema
 const manufacturerSchema = new mongoose.Schema({
     name: { type: String, required: true },
     country: { type: String, required: true },
     website: { type: String },
     description: { type: String },
     address: { type: String },
-    contact: { type: contactSchema, required: true }, // Embedded Contact schema
-});
+    contact: contactSchema // Embed Contact schema
+}, { _id: false }); // No _id for embedded documents
 
-// Product schema
+// Define the Product schema
 const productSchema = new mongoose.Schema({
     name: { type: String, required: true },
     sku: { type: Number, required: true, unique: true },
     description: { type: String },
     price: { type: Number, required: true },
     category: { type: String },
-    manufacturer: { type: manufacturerSchema, required: true }, // Embedded Manufacturer schema
     amountInStock: { type: Number, default: 0 },
+    manufacturer: manufacturerSchema // Embed Manufacturer schema
 });
 
-// Skapa modeller
-const Contact = mongoose.model("Contact", contactSchema);
-const Manufacturer = mongoose.model("Manufacturer", manufacturerSchema);
-const Product = mongoose.model("Product", productSchema);
+// Create the Product model
+const Product = mongoose.model('Product', productSchema);
 
-module.exports = { Contact, Manufacturer, Product };
+module.exports = Product;

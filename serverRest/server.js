@@ -18,8 +18,8 @@ mongoose
 const app = express();
 app.use(express.json());
 
-app.use("/contact", contactRouter);
-app.use("/manufacturer", manufacturerRouter);
+/* app.use("/contact", contactRouter);
+app.use("/manufacturer", manufacturerRouter); */
 app.use("/api/products", productsRouter);
 
 //Summarize the total value of all products in stock
