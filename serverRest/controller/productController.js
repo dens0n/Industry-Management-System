@@ -1,7 +1,6 @@
 // controllers/productController.js
-const Product = require('../db/models/imsModel');
+const Product = require("../models/imsModel");
 
-// Retrieve all products
 exports.getAllProducts = async (req, res) => {
     try {
         const products = await Product.find({});
@@ -18,11 +17,13 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
-// Retrieve a single product by ID
 exports.getProduct = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
-        if (!product) return res.status(404).json({ status: "fail", message: "Product not found" });
+        if (!product)
+            return res
+                .status(404)
+                .json({ status: "fail", message: "Product not found" });
         res.status(200).json({
             status: "success",
             data: { product },
@@ -35,7 +36,6 @@ exports.getProduct = async (req, res) => {
     }
 };
 
-// Create a new product
 exports.createProduct = async (req, res) => {
     try {
         const newProduct = await Product.create(req.body);
@@ -51,11 +51,17 @@ exports.createProduct = async (req, res) => {
     }
 };
 
-// Update a product by ID
 exports.updateProduct = async (req, res) => {
     try {
-        const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-        if (!product) return res.status(404).json({ status: "fail", message: "Product not found" });
+        const product = await Product.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        if (!product)
+            return res
+                .status(404)
+                .json({ status: "fail", message: "Product not found" });
         res.status(200).json({
             status: "success",
             data: { product },
@@ -68,11 +74,13 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
-// Delete a product by ID
 exports.deleteProduct = async (req, res) => {
     try {
         const product = await Product.findByIdAndDelete(req.params.id);
-        if (!product) return res.status(404).json({ status: "fail", message: "Product not found" });
+        if (!product)
+            return res
+                .status(404)
+                .json({ status: "fail", message: "Product not found" });
         res.status(204).json({
             status: "success",
             data: null,
@@ -85,11 +93,13 @@ exports.deleteProduct = async (req, res) => {
     }
 };
 
-// Summarize the total value of all products in stock
 exports.totalStockValue = async (req, res) => {
     try {
         const products = await Product.find({});
-        const totalValue = products.reduce((sum, product) => sum + product.price * product.amountInStock, 0);
+        const totalValue = products.reduce(
+            (sum, product) => sum + product.price * product.amountInStock,
+            0
+        );
         res.status(200).json({
             status: "success",
             totalStockValue: totalValue,
@@ -102,14 +112,17 @@ exports.totalStockValue = async (req, res) => {
     }
 };
 
-// Summarize the total value of products in stock per manufacturer
 exports.totalStockValueByManufacturer = async (req, res) => {
     try {
         const products = await Product.aggregate([
-            { $group: {
-                _id: "$manufacturer.name",
-                totalValue: { $sum: { $multiply: ["$price", "$amountInStock"] } }
-            }}
+            {
+                $group: {
+                    _id: "$manufacturer.name",
+                    totalValue: {
+                        $sum: { $multiply: ["$price", "$amountInStock"] },
+                    },
+                },
+            },
         ]);
         res.status(200).json({
             status: "success",
@@ -123,7 +136,6 @@ exports.totalStockValueByManufacturer = async (req, res) => {
     }
 };
 
-// Retrieve a list of all products with less than 10 units in stock
 exports.lowStock = async (req, res) => {
     try {
         const products = await Product.find({ amountInStock: { $lt: 10 } });
@@ -140,10 +152,12 @@ exports.lowStock = async (req, res) => {
     }
 };
 
-// Retrieve a compact list of products with less than 5 items in stock
 exports.criticalStock = async (req, res) => {
     try {
-        const products = await Product.find({ amountInStock: { $lt: 5 } }, 'name manufacturer.contact');
+        const products = await Product.find(
+            { amountInStock: { $lt: 5 } },
+            "name manufacturer.contact"
+        );
         res.status(200).json({
             status: "success",
             results: products.length,
@@ -157,10 +171,9 @@ exports.criticalStock = async (req, res) => {
     }
 };
 
-// Retrieve a list of all manufacturers
 exports.getManufacturers = async (req, res) => {
     try {
-        const products = await Product.distinct('manufacturer.name');
+        const products = await Product.distinct("manufacturer.name");
         res.status(200).json({
             status: "success",
             data: { manufacturers: products },
