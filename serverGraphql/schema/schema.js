@@ -2,17 +2,18 @@ import { buildSchema } from "graphql";
 
 const schema = buildSchema(`
     type Product {
-    id: ID!
-    name: String!
-    description: String!
-    price: Float!
-    manufacturer: Manufacturer!
+        id: ID!
+        name: String!
+        description: String!
+        price: Float!
+        stockQuantity: Int!
+        manufacturer: Manufacturer!
     }
 
     type Manufacturer {
-    id: ID!
-    name: String!
-    contact: Contact!
+        id: ID!
+        name: String!
+        contact: Contact!
     }
 
     type Contact {
@@ -48,18 +49,17 @@ const schema = buildSchema(`
 
     input ProductInput {
         name: String!
-        description: String
+        description: String!
         price: Float!
         stockQuantity: Int!
         manufacturerId: ID!
     }
 
     type Mutation {
-        addProduct(product: ProductInput!): Product!
-        updateProduct(id: ID!, product: ProductInput!): Product!
+        addProduct(input: ProductInput!): Product!
+        updateProduct(id: ID!, input: ProductInput!): Product!
         deleteProduct(id: ID!): Boolean!
     }
 `);
-
 
 export default schema;
